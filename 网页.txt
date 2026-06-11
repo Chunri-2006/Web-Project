@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>默砥科技 - 数字孪生预测模型</title>
+    <meta name="description" content="默砥科技，基于数字孪生系统的预测模型，服务科研机构、高校及钢铁企业，提供基础款与进阶款智能预测解决方案。">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface2: #f1f5f9;
+            --text: #1e293b;
+            --text2: #475569;
+            --text3: #94a3b8;
+            --border: #e2e8f0;
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --primary-light: #e0f2fe;
+            --accent: #f59e0b;
+            --accent-light: #fef3c7;
+            --danger: #ef4444;
+            --success: #10b981;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-lg: 16px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            --max-width: 1280px;
+            --header-h: 64px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+        }
+        ul {
+            list-style: none;
+        }
+        button {
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+            outline: none;
+        }
+        input {
+            font-family: inherit;
+            outline: none;
+        }
+
+        /* ==================== HEADER ==================== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        .header-inner {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+        }
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav a {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text2);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .nav a:hover {
+            background: var(--surface2);
+            color: var(--text);
+        }
+        .nav a.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            white-space: nowrap;
+            letter-spacing: 0.01em;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            border: 2px solid var(--border);
+            background: transparent;
+            color: var(--text);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        .btn-accent {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-accent:hover {
+            background: #d97706;
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        .btn-lg {
+            padding: 14px 28px;
+            font-size: 1rem;
+            border-radius: 10px;
+        }
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            font-size: 1.5rem;
+            color: var(--text);
+            padding: 4px;
+            border-radius: 6px;
+        }
+        .mobile-menu-btn:hover {
+            background: var(--surface2);
+        }
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+                position: absolute;
+                top: var(--header-h);
+                left: 0;
+                right: 0;
+                background: #fff;
+                flex-direction: column;
+                padding: 16px;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow-lg);
+                gap: 2px;
+            }
+            .nav.open {
+                display: flex;
+            }
+            .nav a {
+                padding: 12px 16px;
+                font-size: 0.95rem;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .header-cta {
+                display: none;
+            }
+            .header-cta-mobile {
+                display: block;
+            }
+        }
+        @media (min-width: 769px) {
+            .header-cta-mobile {
+                display: none;
+            }
+        }
+
+        /* ==================== HERO ==================== */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 80px 24px 100px;
+            text-align: center;
+            background: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 40%, #ffffff 100%);
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: 0.02em;
+        }
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(1.6);
+            }
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            color: #0f172a;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--text2);
+            max-width: 650px;
+            margin: 0 auto 36px;
+            line-height: 1.7;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .hero-visual {
+            margin-top: 60px;
+            position: relative;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero-visual .card-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+        }
+        .stat-card .num {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+        }
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: var(--text2);
+            margin-top: 4px;
+        }
+        .stat-card .icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 1.4rem;
+        }
+        .icon-blue {
+            background: #e0f2fe;
+            color: #0ea5e9;
+        }
+        .icon-amber {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+        .icon-green {
+            background: #d1fae5;
+            color: #10b981;
+        }
+        .icon-purple {
+            background: #ede9fe;
+            color: #8b5cf6;
+        }
+
+        /* ==================== SECTIONS ==================== */
+        .section {
+            padding: 80px 24px;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 52px;
+        }
+        .section-header .tag {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .section-header h2 {
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+        .section-header p {
+            color: var(--text2);
+            font-size: 1.05rem;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        /* ==================== PRODUCT CARDS ==================== */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 28px;
+            align-items: stretch;
+        }
+        .product-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 36px 28px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-card:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-4px);
+            border-color: #cbd5e1;
+        }
+        .product-card.featured {
+            border: 2px solid var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+        .product-card .badge-ribbon {
+            position: absolute;
+            top: 16px;
+            right: -32px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 36px;
+            transform: rotate(45deg);
+            letter-spacing: 0.03em;
+        }
+        .product-card .product-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 18px;
+        }
+        .product-card h3 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+        .product-card .subtitle {
+            font-size: 0.85rem;
+            color: var(--text3);
+            margin-bottom: 16px;
+        }
+        .product-card .features-list {
+            flex: 1;
+            margin-bottom: 20px;
+        }
+        .product-card .features-list li {
+            padding: 6px 0;
+            font-size: 0.9rem;
+            color: var(--text2);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.5;
+        }
+        .product-card .features-list li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .product-card .price-area {
+            padding: 16px 0;
+            border-top: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+        .product-card .price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .product-card .price span {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text3);
+        }
+        .product-card .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==================== FEATURES GRID ==================== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .feature-item {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            transition: var(--transition);
+        }
+        .feature-item:hover {
+            box-shadow: var(--shadow-md);
+            border-color: #cbd5e1;
+        }
+        .feature-item .feat-icon {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+        .feature-item h4 {
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 1rem;
+        }
+        .feature-item p {
+            font-size: 0.85rem;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        /* ==================== CTA BANNER ==================== */
+        .cta-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f2744 100%);
+            color: #fff;
+            text-align: center;
+            padding: 70px 24px;
+            border-radius: var(--radius-lg);
+            margin: 0 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .cta-banner h2 {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 700;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .cta-banner p {
+            color: #cbd5e1;
+            margin-bottom: 28px;
+            position: relative;
+            font-size: 1rem;
+        }
+        .cta-banner .btn {
+            position: relative;
+        }
+
+        /* ==================== FOOTER ==================== */
+        .footer {
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 48px 24px 24px;
+            margin-top: 80px;
+        }
+        .footer-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+        }
+        .footer h5 {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: 0.02em;
+        }
+        .footer a,
+        .footer p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            line-height: 2;
+            transition: var(--transition);
+        }
+        .footer a:hover {
+            color: #fff;
+        }
+        .footer-bottom {
+            max-width: var(--max-width);
+            margin: 32px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid #1e293b;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* ==================== ADMIN PANEL ==================== */
+        .admin-login {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            padding: 24px;
+        }
+        .admin-login-card {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            padding: 40px 32px;
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .admin-login-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .admin-login-card .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        .admin-login-card label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text2);
+        }
+        .admin-login-card input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        .admin-login-card input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+        .admin-dashboard {
+            min-height: 100vh;
+            background: #f1f5f9;
+        }
+        .admin-header {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .admin-header h3 {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .admin-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-box {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .stat-box .stat-icon-large {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .stat-box .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+        }
+        .stat-box .stat-label-small {
+            font-size: 0.8rem;
+            color: var(--text3);
+            margin-top: 2px;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .dash-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+        .dash-card h4 {
+            font-weight: 700;
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 140px;
+            padding-top: 20px;
+        }
+        .bar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+        .bar {
+            width: 100%;
+            max-width: 48px;
+            border-radius: 6px 6px 0 0;
+            background: linear-gradient(180deg, #0ea5e9, #38bdf8);
+            transition: var(--transition);
+            min-width: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        .bar:hover {
+            opacity: 0.8;
+            box-shadow: 0 0 12px rgba(14, 165, 233, 0.4);
+        }
+        .bar-label {
+            font-size: 0.7rem;
+            color: var(--text3);
+            text-align: center;
+        }
+        .bar-value {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text2);
+        }
+        .log-list {
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.82rem;
+        }
+        .log-list li {
+            padding: 6px 0;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--text2);
+            display: flex;
+            justify-content: space-between;
+        }
+        .log-list li .time {
+            color: var(--text3);
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+        .refresh-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--success);
+            font-weight: 500;
+        }
+        .refresh-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse-dot 1.5s infinite;
+        }
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            z-index: 999;
+            animation: slideUp 0.35s ease-out;
+            box-shadow: var(--shadow-lg);
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ==================== CONTACT FORM ==================== */
+        .contact-form {
+            max-width: 560px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 36px 28px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        .contact-form .form-row {
+            margin-bottom: 16px;
+        }
+        .contact-form label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            color: var(--text2);
+        }
+        .contact-form input,
+        .contact-form textarea,
+        .contact-form select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: inherit;
+            resize: vertical;
+        }
+        .contact-form input:focus,
+        .contact-form textarea:focus,
+        .contact-form select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+        .contact-form textarea {
+            min-height: 120px;
+        }
+
+        /* ==================== PAGE BANNER ==================== */
+        .page-banner {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 60px 24px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .page-banner h1 {
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #0f172a;
+        }
+        .page-banner p {
+            color: var(--text2);
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+
+        /* ==================== UTILS ==================== */
+        .text-center {
+            text-align: center;
+        }
+        .mt-4 {
+            margin-top: 16px;
+        }
+        .mt-6 {
+            margin-top: 24px;
+        }
+        .mb-4 {
+            margin-bottom: 16px;
+        }
+        .gap-3 {
+            gap: 12px;
+        }
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+        .flex {
+            display: flex;
+        }
+        .items-center {
+            align-items: center;
+        }
+        .justify-center {
+            justify-content: center;
+        }
+        .hidden {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .hide-mobile {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <a href="#home" class="logo" onclick="navigateTo('home')">
+                <div class="logo-icon">默</div>
+                默砥科技
+            </a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单" onclick="toggleMobileMenu()">☰</button>
+            <nav class="nav" id="mainNav">
+                <a href="#home" onclick="navigateTo('home');closeMobileMenu()" class="active" data-nav="home">首页</a>
+                <a href="#products" onclick="navigateTo('products');closeMobileMenu()" data-nav="products">产品服务</a>
+                <a href="#features" onclick="navigateTo('features');closeMobileMenu()" data-nav="features">核心优势</a>
+                <a href="#contact" onclick="navigateTo('contact');closeMobileMenu()" data-nav="contact">联系我们</a>
+                <a href="#admin-login" onclick="navigateTo('admin-login');closeMobileMenu()" data-nav="admin-login" style="color:#94a3b8;font-size:0.8rem;">后台管理</a>
+            </nav>
+            <a href="#contact" class="btn btn-primary header-cta" onclick="navigateTo('contact')">预约演示</a>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN CONTENT AREA ==================== -->
+    <main id="mainContent">
+        <!-- Content rendered by JS SPA router -->
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer" id="footer">
+        <div class="footer-inner">
+            <div>
+                <h5>默砥科技</h5>
+                <p>基于数字孪生系统的智能预测模型，<br>赋能科研与工业智造。</p>
+            </div>
+            <div>
+                <h5>产品</h5>
+                <a href="#products" onclick="navigateTo('products')">基础款 · 智研</a><br>
+                <a href="#products" onclick="navigateTo('products')">进阶款 · 钢智</a>
+            </div>
+            <div>
+                <h5>快速链接</h5>
+                <a href="#home" onclick="navigateTo('home')">首页</a><br>
+                <a href="#features" onclick="navigateTo('features')">核心优势</a><br>
+                <a href="#contact" onclick="navigateTo('contact')">联系我们</a>
+            </div>
+            <div>
+                <h5>联系方式</h5>
+                <p>📧 contact@moditech.com</p>
+                <p>📞 400-XXX-XXXX</p>
+                <p>📍 中国·上海</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2024 默砥科技 Moditech. All rights reserved. | 沪ICP备XXXXXXXX号
+        </div>
+    </footer>
+
+    <!-- ==================== TOAST CONTAINER ==================== -->
+    <div id="toastContainer"></div>
+
+    <script>
+        // ==================== APPLICATION STATE ====================
+        const APP = {
+            currentPage: 'home',
+            sessionId: generateSessionId(),
+            adminToken: null,
+            statsRefreshInterval: null,
+            heartbeatInterval: null,
+        };
+
+        // ==================== SESSION & STATS ====================
+        function generateSessionId() {
+            return 'sess_' + Math.random().toString(36).substring(2, 15) + '_' + Date.now();
+        }
+
+        // In-memory stats store (simulated - in production use a real database)
+        const StatsStore = (() => {
+            // Initialize from localStorage if available
+            let store = {
+                onlineSessions: {}, // { sessionId: lastHeartbeatTimestamp }
+                pageViews: {}, // { pagePath: count }
+                totalVisits: 0,
+                todayVisits: 0,
+                todayDate: new Date().toDateString(),
+                visitLog: [], // [{page, time, sessionId}]
+            };
+
+            // Try to load persisted stats
+            const saved = localStorage.getItem('moditech_stats');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    store = { ...store, ...parsed };
+                    // Reset todayVisits if it's a new day
+                    if (store.todayDate !== new Date().toDateString()) {
+                        store.todayVisits = 0;
+                        store.todayDate = new Date().toDateString();
+                    }
+                } catch (e) { /* ignore */ }
+            }
+
+            function persist() {
+                try {
+                    localStorage.setItem('moditech_stats', JSON.stringify({
+                        pageViews: store.pageViews,
+                        totalVisits: store.totalVisits,
+                        todayVisits: store.todayVisits,
+                        todayDate: store.todayDate,
+                        visitLog: store.visitLog.slice(-200), // keep last 200
+                    }));
+                } catch (e) { /* ignore */ }
+            }
+
+            return {
+                heartbeat(sessionId) {
+                    store.onlineSessions[sessionId] = Date.now();
+                    // Clean up old sessions (> 60 seconds)
+                    const now = Date.now();
+                    for (const [sid, ts] of Object.entries(store.onlineSessions)) {
+                        if (now - ts > 60000) delete store.onlineSessions[sid];
+                    }
+                },
+                getOnlineCount() {
+                    const now = Date.now();
+                    let count = 0;
+                    for (const [, ts] of Object.entries(store.onlineSessions)) {
+                        if (now - ts < 60000) count++;
+                    }
+                    return count;
+                },
+                trackPageView(page) {
+                    store.pageViews[page] = (store.pageViews[page] || 0) + 1;
+                    store.totalVisits++;
+                    const todayStr = new Date().toDateString();
+                    if (store.todayDate !== todayStr) {
+                        store.todayVisits = 0;
+                        store.todayDate = todayStr;
+                    }
+                    store.todayVisits++;
+                    store.visitLog.push({
+                        page,
+                        time: new Date().toISOString(),
+                        sessionId: APP.sessionId,
+                    });
+                    if (store.visitLog.length > 500) store.visitLog = store.visitLog.slice(-500);
+                    persist();
+                },
+                getStats() {
+                    const todayStr = new Date().toDateString();
+                    if (store.todayDate !== todayStr) {
+                        store.todayVisits = 0;
+                        store.todayDate = todayStr;
+                    }
+                    return {
+                        onlineCount: this.getOnlineCount(),
+                        todayVisits: store.todayVisits,
+                        totalVisits: store.totalVisits,
+                        pageViews: { ...store.pageViews },
+                        visitLog: [...store.visitLog].reverse().slice(0, 50),
+                        topPages: Object.entries(store.pageViews)
+                            .sort((a, b) => b[1] - a[1])
+                            .slice(0, 8),
+                    };
+                },
+                getHourlyData() {
+                    const now = new Date();
+                    const hours = [];
+                    for (let i = 23; i >= 0; i--) {
+                        const h = new Date(now);
+                        h.setHours(h.getHours() - i);
+                        const hourKey = h.getHours() + ':00';
+                        const count = store.visitLog.filter(log => {
+                            const logDate = new Date(log.time);
+                            return logDate.getHours() === h.getHours() &&
+                                logDate.toDateString() === h.toDateString();
+                        }).length;
+                        hours.push({ label: hourKey, count });
+                    }
+                    return hours;
+                },
+            };
+        })();
+
+        // ==================== ROUTER ====================
+        function navigateTo(page) {
+            APP.currentPage = page;
+            renderPage(page);
+            // Update active nav
+            document.querySelectorAll('#mainNav a[data-nav]').forEach(a => a.classList.remove('active'));
+            const activeNav = document.querySelector(`#mainNav a[data-nav="${page}"]`);
+            if (activeNav) activeNav.classList.add('active');
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Track page view
+            StatsStore.trackPageView(page);
+            // Update hash
+            if (page === 'home') {
+                window.history.replaceState(null, '', '#');
+            } else {
+                window.history.replaceState(null, '', '#' + page);
+            }
+            // Handle admin dashboard refresh
+            if (page === 'admin-dashboard' && APP.adminToken) {
+                startStatsRefresh();
+            } else {
+                stopStatsRefresh();
+            }
+        }
+
+        function toggleMobileMenu() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('open');
+        }
+
+        function closeMobileMenu() {
+            document.getElementById('mainNav').classList.remove('open');
+        }
+
+        // ==================== RENDER ENGINE ====================
+        function renderPage(page) {
+            const main = document.getElementById('mainContent');
+            const footer = document.getElementById('footer');
+            switch (page) {
+                case 'home':
+                    main.innerHTML = renderHome();
+                    footer.style.display = '';
+                    break;
+                case 'products':
+                    main.innerHTML = renderProducts();
+                    footer.style.display = '';
+                    break;
+                case 'features':
+                    main.innerHTML = renderFeatures();
+                    footer.style.display = '';
+                    break;
+                case 'contact':
+                    main.innerHTML = renderContact();
+                    footer.style.display = '';
+                    break;
+                case 'admin-login':
+                    main.innerHTML = renderAdminLogin();
+                    footer.style.display = 'none';
+                    break;
+                case 'admin-dashboard':
+                    if (APP.adminToken) {
+                        main.innerHTML = renderAdminDashboard();
+                        footer.style.display = 'none';
+                        startStatsRefresh();
+                    } else {
+                        main.innerHTML = renderAdminLogin();
+                        footer.style.display = 'none';
+                    }
+                    break;
+                default:
+                    main.innerHTML = renderHome();
+                    footer.style.display = '';
+            }
+            // Re-bind events after render
+            setTimeout(bindPageEvents, 50);
+        }
+
+        function bindPageEvents() {
+            // Contact form
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('contactName')?.value;
+                    const email = document.getElementById('contactEmail')?.value;
+                    const interest = document.getElementById('contactInterest')?.value;
+                    const message = document.getElementById('contactMessage')?.value;
+                    if (name && email && message) {
+                        showToast('✅ 感谢您的咨询，我们将尽快回复！');
+                        contactForm.reset();
+                        StatsStore.trackPageView('contact-submit');
+                    } else {
+                        showToast('⚠️ 请填写所有必填字段');
+                    }
+                });
+            }
+            // Admin login form
+            const loginForm = document.getElementById('adminLoginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const username = document.getElementById('adminUser')?.value;
+                    const password = document.getElementById('adminPass')?.value;
+                    if (username === 'admin' && password === 'moditech2024') {
+                        APP.adminToken = 'token_' + Math.random().toString(36).substring(2);
+                        localStorage.setItem('moditech_admin_token', APP.adminToken);
+                        navigateTo('admin-dashboard');
+                        showToast('✅ 登录成功，欢迎进入管理后台');
+                    } else {
+                        showToast('❌ 用户名或密码错误');
+                    }
+                });
+            }
+            // Admin logout
+            const logoutBtn = document.getElementById('adminLogoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    APP.adminToken = null;
+                    localStorage.removeItem('moditech_admin_token');
+                    stopStatsRefresh();
+                    navigateTo('home');
+                    showToast('已退出后台管理');
+                });
+            }
+            // Dashboard refresh button
+            const refreshBtn = document.getElementById('refreshStatsBtn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    refreshDashboardStats();
+                    showToast('🔄 数据已刷新');
+                });
+            }
+            // CTA buttons in product cards
+            document.querySelectorAll('.btn-product-cta').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const product = this.getAttribute('data-product');
+                    navigateTo('contact');
+                    setTimeout(() => {
+                        const interestSelect = document.getElementById('contactInterest');
+                        if (interestSelect && product) {
+                            interestSelect.value = product;
+                        }
+                    }, 200);
+                });
+            });
+        }
+
+        // ==================== PAGE TEMPLATES ====================
+        function renderHome() {
+            return `
+            <section class="hero" id="home">
+                <div class="hero-badge"><span class="dot"></span> 数字孪生 · 智能预测</div>
+                <h1>用<span class="highlight">数字孪生</span>预知未来<br>让决策更有底气</h1>
+                <p>默砥科技专注于基于数字孪生系统的预测模型研发，为科研机构、高校及钢铁企业提供精准、高效的智能预测解决方案，助力数字化转型与智能制造升级。</p>
+                <div class="hero-actions">
+                    <a href="#products" class="btn btn-primary btn-lg" onclick="navigateTo('products')">了解产品</a>
+                    <a href="#contact" class="btn btn-outline btn-lg" onclick="navigateTo('contact')">预约演示</a>
+                </div>
+                <div class="hero-visual">
+                    <div class="card-row" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                        <div class="stat-card">
+                            <div class="icon-circle icon-blue">📊</div>
+                            <div class="num">99.7%</div>
+                            <div class="label">预测准确率</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon-circle icon-amber">⚡</div>
+                            <div class="num">&lt;50ms</div>
+                            <div class="label">实时响应延迟</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon-circle icon-green">🏭</div>
+                            <div class="num">200+</div>
+                            <div class="label">服务企业客户</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon-circle icon-purple">🎓</div>
+                            <div class="num">80+</div>
+                            <div class="label">合作高校院所</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="section" id="products-preview">
+                <div class="section-header">
+                    <span class="tag">产品服务</span>
+                    <h2>两大产品线，精准匹配需求</h2>
+                    <p>从科研探索到工业落地，默砥科技为不同场景提供专属的数字孪生预测方案。</p>
+                </div>
+                <div class="products-grid">
+                    <div class="product-card">
+                        <div class="product-icon icon-blue">🎓</div>
+                        <h3>基础款 · 智研</h3>
+                        <p class="subtitle">DTS-Academic —— 服务科研机构与地方高校</p>
+                        <ul class="features-list">
+                            <li>开放API接口，支持二次开发与算法集成</li>
+                            <li>内置多种经典预测模型（ARIMA、LSTM、Transformer）</li>
+                            <li>可视化数据看板，支持实验数据导入导出</li>
+                            <li>提供完整的技术文档与教学案例</li>
+                            <li>社区支持 + 年度版本更新</li>
+                        </ul>
+                        <div class="price-area">
+                            <div class="price">¥29,800<span>/年起</span></div>
+                        </div>
+                        <button class="btn btn-outline btn-full btn-product-cta" data-product="basic">了解详情</button>
+                    </div>
+                    <div class="product-card featured">
+                        <div class="badge-ribbon">热门</div>
+                        <div class="product-icon icon-amber">🏭</div>
+                        <h3>进阶款 · 钢智</h3>
+                        <p class="subtitle">DTS-Industrial —— 服务大型及中小型钢企</p>
+                        <ul class="features-list">
+                            <li>高精度工业级数字孪生建模引擎</li>
+                            <li>实时数据接入，支持PLC/DCS/SCADA系统</li>
+                            <li>设备预测性维护 + 质量缺陷预警</li>
+                            <li>能耗优化与碳排放追踪模块</li>
+                            <li>专属运维团队 + 7×24技术支持</li>
+                            <li>支持私有化部署与数据安全合规</li>
+                        </ul>
+                        <div class="price-area">
+                            <div class="price">¥198,000<span>/年起</span></div>
+                        </div>
+                        <button class="btn btn-primary btn-full btn-product-cta" data-product="pro">立即咨询</button>
+                    </div>
+                </div>
+                <div class="text-center mt-6">
+                    <a href="#products" class="btn btn-outline" onclick="navigateTo('products')">查看完整产品对比 →</a>
+                </div>
+            </section>
+            <section class="section" id="features-preview">
+                <div class="section-header">
+                    <span class="tag">核心优势</span>
+                    <h2>为什么选择默砥科技</h2>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-item"><div class="feat-icon">🧠</div><h4>自研AI引擎</h4><p>基于深度学习的时序预测算法，自适应工况变化。</p></div>
+                    <div class="feature-item"><div class="feat-icon">🔗</div><h4>无缝数据对接</h4><p>支持OPC UA、MQTT、RESTful等多种工业协议。</p></div>
+                    <div class="feature-item"><div class="feat-icon">🛡️</div><h4>数据安全合规</h4><p>支持私有化部署，数据不出厂区，符合等保要求。</p></div>
+                    <div class="feature-item"><div class="feat-icon">📈</div><h4>持续模型优化</h4><p>在线学习机制，模型随数据积累持续进化。</p></div>
+                    <div class="feature-item"><div class="feat-icon">💻</div><h4>低代码可视化</h4><p>拖拽式看板搭建，无需编程即可配置监控界面。</p></div>
+                    <div class="feature-item"><div class="feat-icon">🤝</div><h4>产学研生态</h4><p>与多所985高校深度合作，技术持续领先。</p></div>
+                </div>
+            </section>
+            <div style="max-width:var(--max-width);margin:0 auto;padding:0 24px;">
+                <div class="cta-banner">
+                    <h2>准备好探索数字孪生的力量了吗？</h2>
+                    <p>预约一次免费演示，了解默砥科技如何帮助您实现智能预测。</p>
+                    <a href="#contact" class="btn btn-accent btn-lg" onclick="navigateTo('contact')">立即预约演示 →</a>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderProducts() {
+            return `
+            <div class="page-banner">
+                <h1>产品服务</h1>
+                <p>从科研到工业，默砥科技为每一个场景提供精准的数字孪生预测方案</p>
+            </div>
+            <section class="section">
+                <div class="products-grid">
+                    <div class="product-card">
+                        <div class="product-icon icon-blue">🎓</div>
+                        <h3>基础款 · 智研</h3>
+                        <p class="subtitle">DTS-Academic —— 服务科研机构与地方高校</p>
+                        <ul class="features-list">
+                            <li>开放API接口，支持Python/R/MATLAB调用</li>
+                            <li>内置ARIMA、LSTM、Transformer等经典模型</li>
+                            <li>交互式数据看板，支持实验对比分析</li>
+                            <li>完整技术文档与教学案例包</li>
+                            <li>社区支持 + 年度版本更新</li>
+                            <li>支持本地/云端灵活部署</li>
+                        </ul>
+                        <div class="price-area"><div class="price">¥29,800<span>/年起</span></div></div>
+                        <button class="btn btn-outline btn-full btn-product-cta" data-product="basic">咨询基础款</button>
+                    </div>
+                    <div class="product-card featured">
+                        <div class="badge-ribbon">推荐</div>
+                        <div class="product-icon icon-amber">🏭</div>
+                        <h3>进阶款 · 钢智</h3>
+                        <p class="subtitle">DTS-Industrial —— 服务大型及中小型钢企</p>
+                        <ul class="features-list">
+                            <li>工业级高精度数字孪生建模引擎</li>
+                            <li>实时数据接入PLC/DCS/SCADA系统</li>
+                            <li>设备预测性维护与质量缺陷预警</li>
+                            <li>能耗优化与碳排放追踪模块</li>
+                            <li>专属运维团队 + 7×24技术支持</li>
+                            <li>支持私有化部署，数据安全合规</li>
+                            <li>SLA保障99.9%系统可用性</li>
+                        </ul>
+                        <div class="price-area"><div class="price">¥198,000<span>/年起</span></div></div>
+                        <button class="btn btn-primary btn-full btn-product-cta" data-product="pro">咨询进阶款</button>
+                    </div>
+                </div>
+                <div class="text-center mt-6">
+                    <p style="color:var(--text3);font-size:0.9rem;">以上价格为基础参考，具体报价根据需求规模定制。<br>科研机构可申请教育优惠。</p>
+                </div>
+            </section>`;
+        }
+
+        function renderFeatures() {
+            return `
+            <div class="page-banner"><h1>核心优势</h1><p>技术驱动，深耕数字孪生预测领域</p></div>
+            <section class="section"><div class="features-grid">
+                <div class="feature-item"><div class="feat-icon">🧠</div><h4>自研AI预测引擎</h4><p>基于Transformer架构的时序预测模型，自适应工况变化，准确率领先行业15%。</p></div>
+                <div class="feature-item"><div class="feat-icon">🔗</div><h4>全协议数据接入</h4><p>支持OPC UA、MQTT、Modbus、RESTful等20+工业协议，即插即用。</p></div>
+                <div class="feature-item"><div class="feat-icon">🛡️</div><h4>数据安全与合规</h4><p>支持私有化部署、数据脱敏、RBAC权限控制，符合等保2.0三级要求。</p></div>
+                <div class="feature-item"><div class="feat-icon">📈</div><h4>在线持续学习</h4><p>模型随生产数据持续进化，无需人工干预，越用越精准。</p></div>
+                <div class="feature-item"><div class="feat-icon">💻</div><h4>低代码看板</h4><p>拖拽式可视化配置，5分钟搭建专属监控大屏。</p></div>
+                <div class="feature-item"><div class="feat-icon">🤝</div><h4>产学研深度合作</h4><p>与上海交大、北科大等高校联合研发，技术持续领先。</p></div>
+                <div class="feature-item"><div class="feat-icon">⚡</div><h4>毫秒级实时响应</h4><p>流式计算架构，从数据接入到预测输出延迟低于50毫秒。</p></div>
+                <div class="feature-item"><div class="feat-icon">🌐</div><h4>多云部署灵活</h4><p>支持公有云、私有云、混合云及边缘端部署。</p></div>
+            </div></section>`;
+        }
+
+        function renderContact() {
+            return `
+            <div class="page-banner"><h1>联系我们</h1><p>留下您的需求，我们将在24小时内与您联系</p></div>
+            <section class="section">
+                <form class="contact-form" id="contactForm">
+                    <div class="form-row"><label for="contactName">姓名 *</label><input type="text" id="contactName" required placeholder="您的姓名"></div>
+                    <div class="form-row"><label for="contactEmail">邮箱 *</label><input type="email" id="contactEmail" required placeholder="your@email.com"></div>
+                    <div class="form-row"><label for="contactPhone">电话</label><input type="tel" id="contactPhone" placeholder="可选"></div>
+                    <div class="form-row"><label for="contactInterest">感兴趣的产品</label>
+                        <select id="contactInterest"><option value="">请选择</option><option value="basic">基础款 · 智研</option><option value="pro">进阶款 · 钢智</option><option value="both">两者都想了解</option></select></div>
+                    <div class="form-row"><label for="contactMessage">需求描述 *</label><textarea id="contactMessage" required placeholder="请简要描述您的需求场景..."></textarea></div>
+                    <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">提交咨询</button>
+                </form>
+            </section>`;
+        }
+
+        function renderAdminLogin() {
+            return `
+            <div class="admin-login">
+                <div class="admin-login-card">
+                    <h2>🔐 后台管理登录</h2>
+                    <p style="color:var(--text3);margin-bottom:20px;font-size:0.85rem;">默砥科技 · 数据监控面板</p>
+                    <form id="adminLoginForm">
+                        <div class="form-group"><label for="adminUser">用户名</label><input type="text" id="adminUser" required placeholder="admin"></div>
+                        <div class="form-group"><label for="adminPass">密码</label><input type="password" id="adminPass" required placeholder="请输入密码"></div>
+                        <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">登 录</button>
+                    </form>
+                    <p style="font-size:0.7rem;color:var(--text3);margin-top:16px;">默认账号: admin / moditech2024</p>
+                    <a href="#home" style="font-size:0.8rem;color:var(--primary);margin-top:8px;display:inline-block;" onclick="navigateTo('home')">← 返回首页</a>
+                </div>
+            </div>`;
+        }
+
+        function renderAdminDashboard() {
+            const stats = StatsStore.getStats();
+            const hourlyData = StatsStore.getHourlyData();
+            const maxHourly = Math.max(1, ...hourlyData.map(h => h.count));
+            return `
+            <div class="admin-dashboard">
+                <div class="admin-header">
+                    <h3>📊 默砥科技 · 数据监控面板</h3>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <span class="refresh-indicator"><span class="refresh-dot"></span> 实时监控中</span>
+                        <button class="btn btn-sm btn-outline" id="refreshStatsBtn">🔄 刷新</button>
+                        <button class="btn btn-sm btn-outline" id="adminLogoutBtn" style="color:var(--danger);">退出</button>
+                    </div>
+                </div>
+                <div class="admin-content">
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <div class="stat-icon-large icon-green">👥</div>
+                            <div><div class="stat-value" id="statOnline">${stats.onlineCount}</div><div class="stat-label-small">当前在线人数</div></div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon-large icon-blue">📊</div>
+                            <div><div class="stat-value" id="statToday">${stats.todayVisits}</div><div class="stat-label-small">今日访问量</div></div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon-large icon-amber">📈</div>
+                            <div><div class="stat-value" id="statTotal">${stats.totalVisits.toLocaleString()}</div><div class="stat-label-small">累计总访问量</div></div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon-large icon-purple">📄</div>
+                            <div><div class="stat-value">${Object.keys(stats.pageViews).length}</div><div class="stat-label-small">覆盖页面数</div></div>
+                        </div>
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="dash-card">
+                            <h4>📅 近24小时访问趋势</h4>
+                            <div class="bar-chart" id="hourlyChart">
+                                ${hourlyData.map(h => {
+                                    const height = Math.max(4, (h.count / maxHourly) * 120);
+                                    return `<div class="bar-item"><div class="bar-value">${h.count}</div><div class="bar" style="height:${height}px;" title="${h.label}: ${h.count}次"></div><div class="bar-label">${h.label}</div></div>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                        <div class="dash-card">
+                            <h4>🔥 热门页面排行</h4>
+                            <ul class="log-list" id="topPagesList">
+                                ${stats.topPages.map(([page, count], i) => `
+                                    <li><span>${i+1}. ${page}</span><span style="font-weight:600;">${count}次</span></li>
+                                `).join('') || '<li style="color:var(--text3);">暂无数据</li>'}
+                            </ul>
+                        </div>
+                        <div class="dash-card" style="grid-column: 1 / -1;">
+                            <h4>📋 最近访问记录</h4>
+                            <ul class="log-list" id="visitLogList">
+                                ${stats.visitLog.slice(0, 20).map(log => `
+                                    <li><span>${log.page}</span><span class="time">${new Date(log.time).toLocaleString('zh-CN')}</span></li>
+                                `).join('') || '<li style="color:var(--text3);">暂无记录</li>'}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        // ==================== DASHBOARD REFRESH ====================
+        function refreshDashboardStats() {
+            if (APP.currentPage !== 'admin-dashboard') return;
+            const stats = StatsStore.getStats();
+            const statOnline = document.getElementById('statOnline');
+            const statToday = document.getElementById('statToday');
+            const statTotal = document.getElementById('statTotal');
+            if (statOnline) statOnline.textContent = stats.onlineCount;
+            if (statToday) statToday.textContent = stats.todayVisits;
+            if (statTotal) statTotal.textContent = stats.totalVisits.toLocaleString();
+            // Update top pages
+            const topPagesList = document.getElementById('topPagesList');
+            if (topPagesList && stats.topPages.length > 0) {
+                topPagesList.innerHTML = stats.topPages.map(([page, count], i) =>
+                    `<li><span>${i+1}. ${page}</span><span style="font-weight:600;">${count}次</span></li>`
+                ).join('');
+            }
+            // Update visit log
+            const visitLogList = document.getElementById('visitLogList');
+            if (visitLogList) {
+                visitLogList.innerHTML = stats.visitLog.slice(0, 20).map(log =>
+                    `<li><span>${log.page}</span><span class="time">${new Date(log.time).toLocaleString('zh-CN')}</span></li>`
+                ).join('') || '<li style="color:var(--text3);">暂无记录</li>';
+            }
+            // Update hourly chart
+            const hourlyData = StatsStore.getHourlyData();
+            const maxHourly = Math.max(1, ...hourlyData.map(h => h.count));
+            const hourlyChart = document.getElementById('hourlyChart');
+            if (hourlyChart) {
+                hourlyChart.innerHTML = hourlyData.map(h => {
+                    const height = Math.max(4, (h.count / maxHourly) * 120);
+                    return `<div class="bar-item"><div class="bar-value">${h.count}</div><div class="bar" style="height:${height}px;" title="${h.label}: ${h.count}次"></div><div class="bar-label">${h.label}</div></div>`;
+                }).join('');
+            }
+        }
+
+        function startStatsRefresh() {
+            stopStatsRefresh();
+            APP.statsRefreshInterval = setInterval(refreshDashboardStats, 5000);
+        }
+
+        function stopStatsRefresh() {
+            if (APP.statsRefreshInterval) {
+                clearInterval(APP.statsRefreshInterval);
+                APP.statsRefreshInterval = null;
+            }
+        }
+
+        // ==================== HEARTBEAT ====================
+        function sendHeartbeat() {
+            StatsStore.heartbeat(APP.sessionId);
+        }
+
+        function startHeartbeat() {
+            sendHeartbeat();
+            APP.heartbeatInterval = setInterval(sendHeartbeat, 30000);
+        }
+
+        // ==================== TOAST ====================
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            // Check for admin token
+            const savedToken = localStorage.getItem('moditech_admin_token');
+            if (savedToken) APP.adminToken = savedToken;
+
+            // Determine initial page from hash
+            const hash = window.location.hash.replace('#', '');
+            const validPages = ['home', 'products', 'features', 'contact', 'admin-login', 'admin-dashboard'];
+            const initialPage = validPages.includes(hash) ? hash : 'home';
+
+            // If hash is admin-dashboard but no token, redirect to login
+            if (initialPage === 'admin-dashboard' && !APP.adminToken) {
+                navigateTo('admin-login');
+            } else {
+                navigateTo(initialPage);
+            }
+
+            // Start heartbeat
+            startHeartbeat();
+
+            // Track initial page view
+            StatsStore.trackPageView(initialPage);
+
+            // Handle browser back/forward
+            window.addEventListener('hashchange', () => {
+                const newHash = window.location.hash.replace('#', '');
+                if (validPages.includes(newHash)) {
+                    if (newHash === 'admin-dashboard' && !APP.adminToken) {
+                        navigateTo('admin-login');
+                    } else {
+                        navigateTo(newHash);
+                    }
+                }
+            });
+
+            // Handle page visibility for heartbeat
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    sendHeartbeat();
+                }
+            });
+
+            console.log('🚀 默砥科技 Moditech - 数字孪生预测模型平台已就绪');
+            console.log('📊 后台管理: 点击导航栏"后台管理"或访问 #admin-login');
+            console.log('🔑 默认账号: admin / moditech2024');
+            console.log('👥 当前在线:', StatsStore.getOnlineCount());
+        }
+
+        // ==================== START ====================
+        document.addEventListener('DOMContentLoaded', init);
+
+        // ==================== EXPORT FOR DEBUG ====================
+        window.ModitechApp = {
+            StatsStore,
+            navigateTo,
+            getStats: () => StatsStore.getStats(),
+            APP,
+        };
+    </script>
+</body>
+</html>
